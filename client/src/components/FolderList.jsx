@@ -7,7 +7,7 @@ export default function FolderList({ folders }) {
     <List
       sx={{
         width: "100%",
-        bgcolor: "#7D9D9C",
+        background: "#7D9D9C",
         height: "100%",
         padding: "10px",
         textAlign: "left",
