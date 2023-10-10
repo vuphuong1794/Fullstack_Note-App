@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, Typography, List, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 export default function FolderList({ folders }) {
+  const { folderId } = useParams();
+  console.log({ folderId });
+  const [activeFolderId, setActiveFolderId] = useState(folderId);
   return (
     <List
       sx={{
@@ -26,13 +29,23 @@ export default function FolderList({ folders }) {
           <Link
             key={id}
             to={`folders/${id}`}
-            style={{ textDecoration: "none" }}
+            style={{
+              textDecoration: "none",
+            }}
+            onClick={() => setActiveFolderId(id)}
           >
-            <Card sx={{ mb: "5px" }}>
+            <Card
+              sx={{
+                mb: "5px",
+                background: id === activeFolderId ? "rgb(255 211 140)" : null,
+              }}
+            >
               <CardContent
                 sx={{ "&:last-child": { pb: "10px" }, padding: "10px" }}
               >
-                <Typography>{name}</Typography>
+                <Typography sx={{ fontSize: 16, fontWeight: "bold" }}>
+                  {name}
+                </Typography>
               </CardContent>
             </Card>
           </Link>
