@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import { Link, Outlet, useParams } from "react-router-dom";
-import { Box, Card, CardContent, Grid, List, Typography } from "@mui/material";
+import { Link, Outlet, useParams, useLoaderData } from "react-router-dom";
+import { Card, CardContent, Grid, List, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 
-export default function NodeList() {
+export default function NoteList() {
   const { noteId } = useParams();
   const [activeNoteId, setActiveNoteId] = useState(noteId);
-  const folder = { notes: [{ id: "1", content: "<p>This is new note</p>" }] };
+  const { folder } = useLoaderData();
+
+  console.log("[NoteList]", { folder });
+
+  //const folder = { notes: [{ id: "1", content: "<p>This is new note</p>" }] };
 
   return (
     <Grid container height="100%">
@@ -24,7 +29,13 @@ export default function NodeList() {
       >
         <List
           subheader={
-            <Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <Typography sx={{ fontWeight: "bold" }}>Notes</Typography>
             </Box>
           }

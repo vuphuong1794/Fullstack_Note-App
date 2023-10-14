@@ -6,7 +6,7 @@ export default {
     },
     {
       id: 999,
-      name: "Phuong Vu",
+      name: "Pong Vu",
     },
   ],
   folders: [
@@ -27,6 +27,23 @@ export default {
       name: "Work",
       createAt: "2022-11-10T03:42:132",
       authorId: 123,
+    },
+  ],
+  notes: [
+    {
+      id: "123",
+      content: "<p>Go to supermarket</p>",
+      folderId: "1",
+    },
+    {
+      id: "234",
+      content: "<p>Go to park</p>",
+      folderId: "1",
+    },
+    {
+      id: "123",
+      content: "<p>Go to school</p>",
+      folderId: "2",
     },
   ],
 };

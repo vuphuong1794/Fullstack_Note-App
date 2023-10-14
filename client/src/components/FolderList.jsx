@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Card, CardContent, Typography, List, Box } from "@mui/material";
+import { Card, CardContent, Typography, List } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
+import { Box } from "@mui/system";
 
 export default function FolderList({ folders }) {
   const { folderId } = useParams();
   console.log({ folderId });
   const [activeFolderId, setActiveFolderId] = useState(folderId);
+
   return (
     <List
       sx={{

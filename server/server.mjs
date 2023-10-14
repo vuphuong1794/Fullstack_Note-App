@@ -15,15 +15,21 @@ const typeDefs = `#graphql
       id: String,
       name: String,
       createAt: String,
-      author: Author
+      author: Author,
+      notes: [Note],
+    }
+    type Note{
+      id: String,
+      content: String,
     }
     type Author{
       id: String, 
       name: String
     }
     type Query{
-      folders: [Folder]
-      folder(folderId: String): Folder
+      folders: [Folder],
+      folder(folderId: String): Folder,
+      note(noteId: String): Note
     }
 `;
 const resolvers = {
@@ -36,6 +42,10 @@ const resolvers = {
       console.log({ folderId });
       return fakeData.folders.find((folder) => folder.id === folderId);
     },
+    note: (parent, args) => {
+      const noteId = args.noteId;
+      return fakeData.notes.find((note) => note.id === noteId);
+    },
   },
   Folder: {
     author: (parent, args) => {
@@ -43,6 +53,10 @@ const resolvers = {
       const authorId = parent.authorId;
       return fakeData.authors.find((author) => author.id === authorId);
       //return { id: "123", name: "HoleTex" };
+    },
+    notes: (parent, args) => {
+      console.log({ parent });
+      return fakeData.notes.filter((note) => note.folderId === parent.id);
     },
   },
 };
