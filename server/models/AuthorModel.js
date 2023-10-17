@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
-const folderSchema = new mongoose.Schema(
+const authorSchema = new mongoose.Schema(
   {
-    name: {
+    uid: {
       type: String,
       required: true,
     },
-    authorId: {
+    name: {
       type: String,
       required: true,
     },
@@ -14,5 +14,5 @@ const folderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const FolderModel = mongoose.model("Folder", folderSchema);
-export default FolderModel;
+const AuthorModel = mongoose.model("Author", authorSchema);
+export default AuthorModel;
