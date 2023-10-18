@@ -8,10 +8,13 @@ export const resolvers = {
       return folders;
       //return fakeData.folders;
     },
-    folder: (parent, args) => {
+    folder: async (parent, args) => {
       const folderId = args.folderId;
       console.log({ folderId });
-      return fakeData.folders.find((folder) => folder.id === folderId);
+      const foundFolder = await FolderModel.findOne({
+        _id: folderId,
+      });
+      return foundFolder;
     },
     note: (parent, args) => {
       const noteId = args.noteId;
@@ -28,6 +31,14 @@ export const resolvers = {
     notes: (parent, args) => {
       console.log({ parent });
       return fakeData.notes.filter((note) => note.folderId === parent.id);
+    },
+  },
+  Mutation: {
+    addFolder: async (parent, args) => {
+      const newFolder = new FolderModel({ ...args, authorId: "123" });
+      console.log({ newFolder });
+      await newFolder.save();
+      return newFolder;
     },
   },
 };

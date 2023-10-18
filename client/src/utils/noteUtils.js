@@ -37,19 +37,7 @@ export const noteLoader = async ({ params: { noteId } }) => {
       }
     }
     `;
-  const res = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        noteId,
-      },
-    }),
-  });
+
   const { data } = await res.json();
   console.log("Note List", { data });
   return data;
