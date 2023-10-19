@@ -11,7 +11,7 @@ const folderSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true } //tu dong them createdAt và updateAt
 );
 
 const FolderModel = mongoose.model("Folder", folderSchema);
