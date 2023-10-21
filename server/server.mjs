@@ -8,8 +8,10 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { resolvers } from "./resolvers/index.js";
 import { typeDefs } from "./schemas/index.js";
+import { getAuth } from "firebase-admin/auth";
 import "dotenv/config";
 import "./firebaseConfig.js";
+
 const app = express();
 const httpServer = http.createServer(app);
 
@@ -30,9 +32,40 @@ await server.start();
 //chan tat ca reqest tu client gui toi, can verify accesstoken trong header no co hop le khong thi moi cho xu ly tiep cac middleware khac
 const authorizationJWT = async (req, res, next) => {
   console.log({ authorization: req.headers.authorization });
-  next();
+  const authorizationHeader = req.headers.authorization;
+
+  if (authorizationHeader) {
+    const accessToken = authorizationHeader.split(" ")[1];
+
+    //kiem tra token hop le khong
+    getAuth()
+      .verifyIdToken(accessToken)
+      .then((decodedToken) => {
+        console.log({ decodedToken });
+        res.locals.uid = decodedToken.uid;
+        next();
+      })
+      .catch((err) => {
+        console.log({ err });
+        //khong co quyen truy xuat den api
+        return res.status(403).json({ message: "Forbidden", error: err });
+      });
+  } else {
+    //next();
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 };
-app.use(cors(), authorizationJWT, bodyParser.json(), expressMiddleware(server));
+
+app.use(
+  cors(),
+  authorizationJWT,
+  bodyParser.json(),
+  expressMiddleware(server, {
+    context: async ({ req, res }) => {
+      return { uid: res.locals.uid };
+    },
+  })
+);
 
 //ket noi toi database
 mongoose.set("strictQuery", false);
