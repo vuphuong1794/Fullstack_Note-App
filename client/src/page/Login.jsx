@@ -8,6 +8,7 @@ import { graphQLrequest } from "../utils/request";
 export default function Login() {
   const auth = getAuth();
   const { user } = useContext(AuthContext);
+  //khong dung useNavigate khi khong su dung useEffect
   //const navigate = useNavigate();
 
   const handleLoginWithGoogle = async () => {
@@ -32,6 +33,7 @@ export default function Login() {
     console.log("register", { data });
   };
 
+  // kiem tra neu user co thuc hien dang nhap thanh cong thi moi chuyen huong sang trang homepage
   if (localStorage.getItem("accessToken")) {
     //navigate("/");
     return <Navigate to="/" />;
