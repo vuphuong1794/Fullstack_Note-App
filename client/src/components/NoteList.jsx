@@ -1,15 +1,36 @@
 import React, { useState } from "react";
-import { Link, Outlet, useParams, useLoaderData } from "react-router-dom";
-import { Card, CardContent, Grid, List, Typography } from "@mui/material";
+import {
+  Link,
+  Outlet,
+  useParams,
+  useLoaderData,
+  useSubmit,
+} from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  Grid,
+  List,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 
 export default function NoteList() {
-  const { noteId } = useParams();
+  const { noteId, folderId } = useParams();
   const [activeNoteId, setActiveNoteId] = useState(noteId);
   const { folder } = useLoaderData();
-
+  const submit = useSubmit();
   console.log("[NoteList]", { folder });
-
+  const handleAddNewNote = () => {
+    submit(
+      {
+        content: "",
+        folderId,
+      },
+      { method: "post", action: `/folders/${folderId}` }
+    );
+  };
   //const folder = { notes: [{ id: "1", content: "<p>This is new note</p>" }] };
 
   return (
@@ -37,6 +58,11 @@ export default function NoteList() {
               }}
             >
               <Typography sx={{ fontWeight: "bold" }}>Notes</Typography>
+              <Tooltip title="Add Note" onClick={handleAddNewNote}>
+                <IconButton size="small">
+                  <NoteAddOutLined />
+                </IconButton>
+              </Tooltip>
             </Box>
           }
         >

@@ -14,6 +14,7 @@ export const graphQLrequest = async (payload, options = {}) => {
     });
 
     if (!res.ok) {
+      // 403 lỗi forbidden (token hết hạn)
       if (res.status === 403) {
         return null;
       }
