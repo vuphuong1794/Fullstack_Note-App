@@ -2,6 +2,7 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  background-color: "#E6E3E3";
 }
 #root {
   width: 100%;

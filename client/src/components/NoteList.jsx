@@ -10,11 +10,13 @@ import {
   Card,
   CardContent,
   Grid,
+  IconButton,
   List,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import { NoteAddOutlined } from "@mui/icons-material";
 
 export default function NoteList() {
   const { noteId, folderId } = useParams();
@@ -60,7 +62,7 @@ export default function NoteList() {
               <Typography sx={{ fontWeight: "bold" }}>Notes</Typography>
               <Tooltip title="Add Note" onClick={handleAddNewNote}>
                 <IconButton size="small">
-                  <NoteAddOutLined />
+                  <NoteAddOutlined />
                 </IconButton>
               </Tooltip>
             </Box>
