@@ -23,6 +23,7 @@ export default function NoteList() {
   const [activeNoteId, setActiveNoteId] = useState(noteId);
   const { folder } = useLoaderData();
   const submit = useSubmit();
+
   console.log("[NoteList]", { folder });
   const handleAddNewNote = () => {
     submit(
