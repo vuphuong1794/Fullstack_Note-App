@@ -42,6 +42,7 @@ export default function NewFolder() {
     handleClose();
   };
 
+  //nếu popupname có kiểu là add-folder thì sẽ mở bảng để thêm folder mới
   useEffect(() => {
     console.log({ popupName });
     if (popupName === "add-folder") {

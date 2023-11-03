@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Link,
   Outlet,
   useParams,
   useLoaderData,
   useSubmit,
+  useNavigate,
 } from "react-router-dom";
 import {
   Card,
@@ -23,15 +24,27 @@ export default function NoteList() {
   const [activeNoteId, setActiveNoteId] = useState(noteId);
   const { folder } = useLoaderData();
   const submit = useSubmit();
-
+  const navigate = useNavigate();
   console.log("[NoteList]", { folder });
+
+  //khi thay dổi folder thì folder nào có note sẵn thì mặc định load note đầu tiên trước
+  useEffect(() => {
+    if (noteId) {
+      setActiveNoteId(noteId);
+      return;
+    }
+    if (folder?.notes?.[0]) {
+      navigate(`note/${folder.notes[0].id}`);
+    }
+  }, [noteId, folder.notes]);
+
   const handleAddNewNote = () => {
     submit(
       {
         content: "",
         folderId,
       },
-      { method: "post", action: `/folders/${folderId}` }
+      { method: "post", action: `/folders/${folderId}` } //dùng phương thức post để dùng action
     );
   };
   //const folder = { notes: [{ id: "1", content: "<p>This is new note</p>" }] };
