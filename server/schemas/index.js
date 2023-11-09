@@ -1,4 +1,6 @@
 export const typeDefs = `#graphql
+    scalar Date
+
     type Folder{
       id: String!,
       name: String,
@@ -10,6 +12,7 @@ export const typeDefs = `#graphql
     type Note{
       id: String!,
       content: String,
+      updatedAt: Date
     }
 
     type Author{ 

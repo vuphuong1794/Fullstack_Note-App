@@ -17,6 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import moment from "moment";
 import { NoteAddOutlined } from "@mui/icons-material";
 
 export default function NoteList() {
@@ -36,6 +37,7 @@ export default function NoteList() {
     if (folder?.notes?.[0]) {
       navigate(`note/${folder.notes[0].id}`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [noteId, folder.notes]);
 
   const handleAddNewNote = () => {
@@ -82,7 +84,7 @@ export default function NoteList() {
             </Box>
           }
         >
-          {folder.notes.map(({ id, content }) => {
+          {folder.notes.map(({ id, content, updateAt }) => {
             return (
               <Link
                 key={id}
@@ -105,6 +107,10 @@ export default function NoteList() {
                         __html: `${content.substring(0, 30) || "Empty"}`,
                       }}
                     />
+
+                    <Typography sx={{ fontSize: "10px" }}>
+                      {moment(updateAt).format("MMMM Do YYYY, h:mm:ss a")}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Link>

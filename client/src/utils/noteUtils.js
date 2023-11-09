@@ -8,6 +8,7 @@ export const notesLoader = async ({ params: { folderId } }) => {
         notes{
           id
           content
+          updatedAt
         }
       }
     }
@@ -57,7 +58,7 @@ export const addNewNote = async ({ parent, request }) => {
     variables: formDataObj,
   });
   console.log({ addNote });
-  return null;
+  return addNote;
 };
 
 export const updateNote = async ({ parent, request }) => {

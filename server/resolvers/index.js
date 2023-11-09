@@ -1,7 +1,21 @@
-import fakeData from "../fakeData/index.js";
+//import fakeData from "../fakeData/index.js";
 import { AuthorModel, FolderModel, NoteModel } from "../models/index.js";
+import { GraphQLScalarType } from "graphql";
+import { PubSub } from "graphql-subscriptions";
 
+const pubsub = new PubSub();
 export const resolvers = {
+  //tạo kiểu dữ liệu Date
+  Date: new GraphQLScalarType({
+    name: "Date",
+    //tạo ra 1 kiểu dữ liệu nào đó trả về cho client
+    parseValue(value) {
+      return new Date(value);
+    },
+    serialize(value) {
+      return value.toISOString();
+    },
+  }),
   Query: {
     folders: async (parent, args, context) => {
       //sap xep folder theo trinh tu moi->cu

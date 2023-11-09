@@ -6,6 +6,10 @@ import bodyParser from "body-parser";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
 import mongoose from "mongoose";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
+
 import { resolvers } from "./resolvers/index.js";
 import { typeDefs } from "./schemas/index.js";
 import { getAuth } from "firebase-admin/auth";
@@ -19,12 +23,32 @@ const httpServer = http.createServer(app);
 const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.k5l4pvo.mongodb.net/?retryWrites=true&w=majority`;
 const PORT = process.env.PORT || 4000;
 
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+//creating the WebSocket server
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: "/",
+});
+
+const serverCleanup = useServer({ schema }, wsServer);
 //resolvers
 //schema
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
+  ],
 });
 
 await server.start();
@@ -76,6 +100,7 @@ mongoose
   })
   .then(async () => {
     console.log("conected to DB");
+    //chỉ cần start httpServer thì có thể start graphqlServer và websocketServer
     await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
     console.log(" Server ready at http://localhost:4000");
   });
