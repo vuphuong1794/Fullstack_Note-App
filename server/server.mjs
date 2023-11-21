@@ -12,33 +12,39 @@ import { useServer } from "graphql-ws/lib/use/ws";
 
 import { resolvers } from "./resolvers/index.js";
 import { typeDefs } from "./schemas/index.js";
-import { getAuth } from "firebase-admin/auth";
-import "dotenv/config";
 import "./firebaseConfig.js";
+import { getAuth } from "firebase-admin/auth";
+
+import "dotenv/config";
 
 const app = express();
 const httpServer = http.createServer(app);
 
-//connect to database
+// Connect to DB
 const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.k5l4pvo.mongodb.net/?retryWrites=true&w=majority`;
 const PORT = process.env.PORT || 4000;
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-//creating the WebSocket server
+// Creating the WebSocket server
 const wsServer = new WebSocketServer({
+  // This is the `httpServer` we created in a previous step.
   server: httpServer,
-  path: "/",
+  // Pass a different path here if app.use
+  // serves expressMiddleware at a different path
+  path: "/graphql",
 });
 
+// Hand in the schema we just created and have the
+// WebSocketServer start listening.
 const serverCleanup = useServer({ schema }, wsServer);
-//resolvers
-//schema
+
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  // typeDefs,
+  // resolvers,
+  schema,
   plugins: [
-    ApolloServerPluginDrainHttpServer({ httpServer }),
+    ApolloServerPluginDrainHttpServer({ httpServer }), // Proper shutdown for the WebSocket server.
     {
       async serverWillStart() {
         return {
@@ -53,7 +59,6 @@ const server = new ApolloServer({
 
 await server.start();
 
-//chan tat ca reqest tu client gui toi, can verify accesstoken trong header no co hop le khong thi moi cho xu ly tiep cac middleware khac
 const authorizationJWT = async (req, res, next) => {
   console.log({ authorization: req.headers.authorization });
   const authorizationHeader = req.headers.authorization;
@@ -61,7 +66,6 @@ const authorizationJWT = async (req, res, next) => {
   if (authorizationHeader) {
     const accessToken = authorizationHeader.split(" ")[1];
 
-    //kiem tra token hop le khong
     getAuth()
       .verifyIdToken(accessToken)
       .then((decodedToken) => {
@@ -71,12 +75,11 @@ const authorizationJWT = async (req, res, next) => {
       })
       .catch((err) => {
         console.log({ err });
-        //khong co quyen truy xuat den api
         return res.status(403).json({ message: "Forbidden", error: err });
       });
   } else {
     next();
-    //return res.status(401).json({ message: "Unauthorized" });
+    // return res.status(401).json({ message: 'Unauthorized' });
   }
 };
 
@@ -91,7 +94,6 @@ app.use(
   })
 );
 
-//ket noi toi database
 mongoose.set("strictQuery", false);
 mongoose
   .connect(URI, {
@@ -99,8 +101,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(async () => {
-    console.log("conected to DB");
-    //chỉ cần start httpServer thì có thể start graphqlServer và websocketServer
+    console.log("Connected to DB");
     await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
-    console.log(" Server ready at http://localhost:4000");
+    console.log("🚀 Server ready at http://localhost:4000");
   });
